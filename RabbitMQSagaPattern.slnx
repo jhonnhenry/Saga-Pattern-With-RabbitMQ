@@ -1,0 +1,29 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/0 - SagaOrchestrator/">
+    <Project Path="src/SagaOrchestrator/SagaOrchestrator.csproj" />
+  </Folder>
+  <Folder Name="/1 - OrderService/">
+    <Project Path="src/OrderService/OrderService.csproj" />
+  </Folder>
+  <Folder Name="/2 - PaymentService/">
+    <Project Path="src/PaymentService/PaymentService.csproj" />
+  </Folder>
+  <Folder Name="/3 - InventoryService/">
+    <Project Path="src/InventoryService/InventoryService.csproj" />
+  </Folder>
+  <Folder Name="/4 - DeliveryService/">
+    <Project Path="src/DeliveryService/DeliveryService.csproj" />
+  </Folder>
+  <Folder Name="/999 - Tests/">
+    <Project Path="tests/IntegrationTests/IntegrationTests.csproj" />
+    <Project Path="tests/UnitTests/UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Shared/Shared.csproj" />
+  </Folder>
+</Solution>
