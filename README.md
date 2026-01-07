@@ -1,6 +1,6 @@
-# RabbitMQ Saga Pattern - Exemplo Complexo
+# RabbitMQ Saga Pattern - Exemplo Prático
 
-Um exemplo completo e profissional de implementação do **Saga Pattern** (transações distribuídas) usando **RabbitMQ** e **.NET Core 9**, demonstrando como coordenar operações entre múltiplos microserviços sem transações ACID tradicionais.
+Um exemplo completo de implementação do **Saga Pattern** (transações distribuídas) usando **RabbitMQ** e **.NET Core 9**, demonstrando como coordenar operações entre múltiplos microserviços sem transações ACID tradicionais.
 
 ## 📚 O que é Saga Pattern?
 
@@ -35,7 +35,7 @@ ou CANCELADO com reembolso ✗
 - ✅ **Message Headers** - Rastreamento via CorrelationId e Timestamp
 - ✅ **Message Correlation** - Rastreamento completo de transações
 - ✅ **Retry Logic** - Backoff exponencial com TTL
-- ✅ **RPC Pattern** - Comunicação síncrona quando necessário
+
 
 ## 🛠️ Stack Tecnológico
 
@@ -45,7 +45,7 @@ ou CANCELADO com reembolso ✗
 - **ORM**: Entity Framework Core 9
 - **API**: ASP.NET Core Minimal APIs
 - **Logging**: NLog
-- **Testing**: xUnit + TestContainers
+
 
 ---
 
@@ -64,8 +64,8 @@ ou CANCELADO com reembolso ✗
 #### 1. Clone e entre no diretório
 
 ```bash
-git clone https://github.com/seu-usuario/rabbitmq-saga-pattern.git
-cd rabbitmq-saga-pattern
+git clone https://github.com/jhonnhenry/Saga-Pattern-With-RabbitMQ.git
+cd Saga-Pattern-With-RabbitMQ
 ```
 
 #### 2. Inicie os serviços
@@ -87,21 +87,6 @@ docker logs rabbitmq-saga-pattern-rabbitmq
 docker logs rabbitmq-saga-pattern-sqlserver
 docker logs rabbitmq-saga-pattern-init
 ```
-
-
-#### 4. Verifique se os serviços estão rodando
-
-**RabbitMQ Management UI:**
-```
-http://localhost:15672
-Login: guest / guest
-```
-
-**SQL Server:**
-Conecte-se com:
-- **Server**: localhost,1433
-- **User**: sa
-- **Password**: SaPassword123!
 
 ---
 
@@ -194,6 +179,13 @@ http://localhost:15672
 # Login
 Username: guest
 Password: guest
+
+
+# No SQL Server conecte-se com:
+Server: localhost,1433
+User: sa
+Password: SaPassword123!
+
 ```
 
 Você deve ver:
@@ -208,28 +200,31 @@ Crie um pedido pelo swagger
 
 ### 5. Verificar Banco de Dados
 
-Os produtos disponíveis são criados via SEED
+# Os produtos disponíveis são criados via SEED
+```bash
 SELECT * FROM [SagaDb].[dbo].[Products]
+```
 
 ## Veja as tabelas no SQL Server
+```bash
+SELECT * FROM [dbo].[Orders];
+SELECT * FROM [dbo].[OrderItems];
+SELECT * FROM [dbo].[Payments];
+SELECT * FROM [dbo].[Reservations];
+SELECT * FROM [dbo].[Deliveries];
+SELECT * FROM [dbo].[SagaStates];
+SELECT * FROM [dbo].[SagaEvents];
 
-SELECT * FROM [dbo].[Orders]
-SELECT * FROM [dbo].[OrderItems]
-SELECT * FROM [dbo].[Payments]
-SELECT * FROM [dbo].[Reservations]
-SELECT * FROM [dbo].[Deliveries]
-SELECT * FROM [dbo].[SagaEvents]
-SELECT * FROM [dbo].[SagaStates]
+# Caso queira recomeçar delete
 
-Caso queira recomeçar delete
-
-delete FROM [dbo].[OrderItems]
-delete FROM [dbo].[Deliveries]
-delete FROM [dbo].[Payments]
-delete FROM [dbo].[Reservations]
-delete FROM [dbo].[Orders]
-delete FROM [dbo].[SagaEvents]
-delete FROM [dbo].[SagaStates]
+delete FROM [dbo].[OrderItems];
+delete FROM [dbo].[Deliveries];
+delete FROM [dbo].[Payments];
+delete FROM [dbo].[Reservations];
+delete FROM [dbo].[Orders];
+delete FROM [dbo].[SagaEvents];
+delete FROM [dbo].[SagaStates];
+```
 
 ---
 
@@ -239,26 +234,6 @@ Os logs são gerenciados pelo NLog.
 Você verá uma pasta Logs na raiz do projeto.
 Apenas os logs de nível Error serão registrados no arquivo de texto.
 O restante será registrado no console.
-
-### Rastreando Mensagens
-
-Cada mensagem tem um `CorrelationId`:
-
-```csharp
-// Ao publicar
-var message = new OrderCreated
-{
-    OrderId = order.Id,
-    CorrelationId = Guid.NewGuid().ToString()  // Gerado aqui
-};
-
-// Log com CorrelationId
-_logger.LogInformation(
-    "Processing order {OrderId} with correlation {CorrelationId}",
-    order.Id,
-    message.CorrelationId
-);
-```
 
 ---
 
@@ -308,9 +283,8 @@ docker exec rabbitmq-saga-pattern-sqlserver sqlcmd -S localhost -U sa -P 'SaPass
 # Remover migrations anteriores
 dotnet ef migrations remove
 
-# Recriar schema
+# Deletar database
 dotnet ef database drop -f
-dotnet ef database update
 ```
 
 ### Mensagens ficando em DLQ
